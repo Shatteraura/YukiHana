@@ -986,7 +986,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mRef: {fileID: 1720124841}
-  dialogueCurrent: 0
+  sceneNum: 0
+  dialogueNum: 0
   dialogueText: {fileID: 438588679}
 --- !u!1 &1426198299
 GameObject:
@@ -1260,9 +1261,9 @@ MonoBehaviour:
   totalMoney: 0
   totalFame: 0
   eventCost: 0
-  hanaHappiness: 0
+  hanaHappiness: 50
   hanaStress: 0
-  yukHappiness: 0
+  yukiHappiness: 50
   yukiStress: 0
   hanaSelect: 0
   yukiSelect: 0
@@ -1276,7 +1277,6 @@ MonoBehaviour:
   endturn: {x: 0, y: 0, z: 0}
   yuki: {x: 0, y: 0, z: 0}
   hana: {x: 0, y: 0, z: 0}
-  interfaceBar: {x: 0, y: 0, z: 0}
 --- !u!1 &1747471520
 GameObject:
   m_ObjectHideFlags: 0

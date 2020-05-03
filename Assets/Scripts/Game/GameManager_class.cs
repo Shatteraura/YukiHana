@@ -18,10 +18,17 @@ public class GameManager_class : MonoBehaviour
 
     public int eventCost;
 
-    public int hanaHappiness;
+    public int hanaHappiness = 50;
     public int hanaStress;
-    public int yukHappiness;
+    public int hanaWeight = 120;
+    public int hanaFeedee = 0;
+    public int hanaLove = 0;
+
+    public int yukiHappiness = 50;
     public int yukiStress;
+    public int yukiWeight = 120;
+    public int yukiFeedee = 0;
+    public int yukiLove = 0;
 
     public bool hanaSelect;
     public bool yukiSelect;
