@@ -20,15 +20,17 @@ public class GameManager_class : MonoBehaviour
 
     public int hanaHappiness = 50;
     public int hanaStress;
-    public int hanaWeight = 120;
-    public int hanaFeedee = 0;
+    public int hanaWeight = 100;
+    public int hanaFeedee = 1;
     public int hanaLove = 0;
+    public bool hanaStuffed = false;
 
     public int yukiHappiness = 50;
     public int yukiStress;
-    public int yukiWeight = 120;
-    public int yukiFeedee = 0;
+    public int yukiWeight = 100;
+    public int yukiFeedee = 1;
     public int yukiLove = 0;
+    public bool yukiStuffed = false;
 
     public bool hanaSelect;
     public bool yukiSelect;
@@ -80,5 +82,144 @@ public class GameManager_class : MonoBehaviour
         {
             characterSelect = characterSelectEnum.none;
         }
+    }
+
+
+    public int feedeeLevelH()
+    {
+        if (hanaFeedee < 10)
+        {
+            return 1;
+        }
+        else if (hanaFeedee < 20)
+        {
+            return 2;
+        }
+        else if (hanaFeedee < 30)
+        {
+            return 3;
+        }
+
+        return 0;
+    }
+
+    public int feedeeLevelY()
+    {
+        if (yukiFeedee < 10)
+        {
+            return 1;
+        }
+        else if (yukiFeedee < 20)
+        {
+            return 2;
+        }
+        else if (yukiFeedee < 30)
+        {
+            return 3;
+        }
+
+        return 0;
+    }
+
+
+
+    public int weightLevelH()
+    {
+        if (hanaWeight < 150)
+        {
+            return 0;
+        }
+        else if (hanaWeight < 200)
+        {
+            return 1;
+        }
+        else if (hanaWeight < 250)
+        {
+            return 2;
+        }
+        else if (hanaWeight < 300)
+        {
+            return 3;
+        }
+        else if (hanaWeight < 350)
+        {
+            return 4;
+        }
+        else if (hanaWeight < 400)
+        {
+            return 5;
+        }
+        else if (hanaWeight < 450)
+        {
+            return 6;
+        }
+        else if (hanaWeight < 500)
+        {
+            return 7;
+        }
+        else if (hanaWeight < 550)
+        {
+            return 8;
+        }
+        else if (hanaWeight < 600)
+        {
+            return 9;
+        }
+        else if (hanaWeight <= 650)
+        {
+            return 10;
+        }
+
+        return 0;
+    }
+
+    public int weightLevelY()
+    {
+        if (yukiWeight < 150)
+        {
+            return 0;
+        }
+        else if (yukiWeight < 200)
+        {
+            return 1;
+        }
+        else if (yukiWeight < 250)
+        {
+            return 2;
+        }
+        else if (yukiWeight < 300)
+        {
+            return 3;
+        }
+        else if (yukiWeight < 350)
+        {
+            return 4;
+        }
+        else if (yukiWeight < 400)
+        {
+            return 5;
+        }
+        else if (yukiWeight < 450)
+        {
+            return 6;
+        }
+        else if (yukiWeight < 500)
+        {
+            return 7;
+        }
+        else if (yukiWeight < 550)
+        {
+            return 8;
+        }
+        else if (yukiWeight < 600)
+        {
+            return 9;
+        }
+        else if (yukiWeight <= 650)
+        {
+            return 10;
+        }
+
+        return 0;
     }
 }

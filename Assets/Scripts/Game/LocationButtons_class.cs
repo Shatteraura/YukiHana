@@ -10,8 +10,6 @@ public class LocationButtons_class : MonoBehaviour
 
     public GameManager_class mRef;
 
-    public int buttonSwitch;
-
     public Sprite normal;
     public Sprite highlight;
 
@@ -95,57 +93,57 @@ public class LocationButtons_class : MonoBehaviour
     }
 
 
-    //Governs how many characters you need/want at an event, buttonswitch prevents conflicts between the buttons fighting over numbers
+    //Governs how many characters you need/want at an event
     private void OnMouseDown()
     {
-        if (mRef.characterSelect == characterSelectEnum.both && mRef.eventLock == false && buttonSwitch == 1)
+
+        switch (buttonType)
         {
-            switch (buttonType)
-            {
-                case buttonTypeEnum.concert:
-                    mRef.eventType = eventTypeEnum.concert;
-                    mRef.resetButtons = false;
-                    break;
-
-                case buttonTypeEnum.tvad:
-                    mRef.eventType = eventTypeEnum.tvad;
-                    mRef.resetButtons = false;
-                    break;
-            }
-
-            mRef.eventLock = true;
-        }
-
-        //Talk isnt locked even after an event
-        if (mRef.characterSelect == characterSelectEnum.hana || mRef.characterSelect == characterSelectEnum.yuki && buttonSwitch == 2)
-        {
-            switch (buttonType)
-            {
-                case buttonTypeEnum.talk:
-                    mRef.eventType = eventTypeEnum.talk;
-                    mRef.resetButtons = false;
-                    break;
-            }
-
-            mRef.eventLock = true;
-        }
-
-        if (mRef.characterSelect != characterSelectEnum.none && mRef.eventLock == false && buttonSwitch == 3)
-        {
-            switch (buttonType)
-            {
-                case buttonTypeEnum.buffet:
+            case buttonTypeEnum.buffet:
+                if (mRef.characterSelect != characterSelectEnum.none && mRef.eventLock == false)
+                {
                     mRef.eventType = eventTypeEnum.buffet;
                     mRef.resetButtons = false;
-                    break;
+                    mRef.eventLock = true;
+                }
+                break;
 
-                case buttonTypeEnum.restaurant:
+            case buttonTypeEnum.talk:
+                if (mRef.characterSelect == characterSelectEnum.hana || mRef.characterSelect == characterSelectEnum.yuki)
+                {
+                    mRef.eventType = eventTypeEnum.talk;
+                    mRef.resetButtons = false;
+                    mRef.eventLock = true;
+                }
+                break;
+
+            case buttonTypeEnum.tvad:
+                if (mRef.characterSelect == characterSelectEnum.both && mRef.eventLock == false)
+                {
+                    mRef.eventType = eventTypeEnum.tvad;
+                    mRef.resetButtons = false;
+                    mRef.eventLock = true;
+                }
+                break;
+
+            case buttonTypeEnum.concert:
+                if (mRef.characterSelect == characterSelectEnum.both && mRef.eventLock == false)
+                {
+                    mRef.eventType = eventTypeEnum.concert;
+                    mRef.resetButtons = false;
+                    mRef.eventLock = true;
+                }
+                break;
+
+            case buttonTypeEnum.restaurant:
+                if (mRef.characterSelect != characterSelectEnum.none && mRef.eventLock == false)
+                {
                     mRef.eventType = eventTypeEnum.restaurant;
                     mRef.resetButtons = false;
-                    break;
-            }
+                    mRef.eventLock = true;
+                }  
+                break;
 
-            mRef.eventLock = true;
-        }      
+        }     
     }
 }

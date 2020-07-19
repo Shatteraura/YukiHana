@@ -3,153 +3,309 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum currentArrayEnum { HBUF, YBUF, BBUF, BHF1, BHF2, BHF3, BYF1, BYF2, BYF3}
+
 public class EventManager_class : MonoBehaviour
 {
     public GameManager_class mRef;
 
-    public int sceneNum = 0;
+    public int indexNum = 0;
     public int dialogueNum = 0;
+    public int jumpIndex = 0;
+    public int jumpArray = 0;
+    public int randStart = 0;
+    public int randEnd = 0;
 
-    public bool eventSet;
+    public currentArrayEnum currentArray;
+
+    public string currentString;
 
     public Text dialogueText;
 
+    //[indexNum, DialogueNum]  indexNum is Listed at the END of the Lines
+    //#S: START, --- #E: End, --- #N: Next, --- #J *: Jump Index (INum) --- #JA * *: Jump Array (ANum) (INum) --- #F (FNum): Expressions
+    //If a variable is referenced it is listed in the comment above the first entry
+    //Just next to the description comment is the Enum number of the event array
+    //Master Array - Allows the arrays to be read arbitrarily by currentString
 
-    //{ "S", "", "", "", "" }, // Scene Description ONLY ON SCENE START (Dialogue Part e.g. Intro).  UNIQUE Catalogue Number on each!
+    //2D Arrays for Event Descriptions
 
-    //[0,0] - Type Zero, Option Zero --- For example [Scene Stage , Specific Dialog] --- The scene stage will be commented next to the list of dialogue options
-    //NOTES: Just grab scene numbers based on stats! --- Manage the characters selected by code, make their lines play out one after the other! --- Happiness and stress could overule eachother!
-    private string[,] buffetLibrary = new string[,] { 
-        { "S", "We decided return to the buffet place we went to when we all met, the girls seemed pretty excited.", "Yuki: \"This time let's try not to overdo it *Haha*\"", "Hana: \"I'm sure its fine, as the manager said it's okay to indulge once in a while *Giggle*\"", "" }, //BuffetBoth(Intro) < 25 fame 0
-        { "S", "", "", "", "" }, // BuffetBoth(Intro) > 25 fame
-        { "S", "", "", "", "" }, // BuffetBoth(Intro) > 50 fame
-        { "S", "", "", "", "" }, // BuffetBoth(Intro) > 75 fame
+    //Just Hana Buffet[0]
+    private string[,] buffetH = new string[,]
+    {
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "I decided to take Hana out to the Buffet.", "#F", "As I arrived, I was shocked to see her already standing there. Checking my watch I realised she was even earlier than me!", "#F", "Hey! Hana!", "#J 11" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
 
-        { "S", "", "", "", "" }, // BuffetBoth(Early) < 200 weight Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Early) > 200 weight Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Early) > 300 weight Hana
+        //SPECULATIVE - Introductions - Variable indexNum - Fame
 
-        { "S", "", "", "", "" }, // BuffetBoth(Early) < 200 weight Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Early) > 200 weight Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Early) > 300 weight Yuki
-
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) < 25 happiness Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 25 happiness Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 50 happiness Hana
-
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) < 25 happiness Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 25 happiness Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 50 happiness Yuki
-
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) < 25 stress Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 25 stress Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 50 stress Hana
-
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) < 25 stress Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 25 stress Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 50 stress Yuki
-
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) < 25 feedee Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 25 feedee Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 50 feedee Hana
-
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) < 25 feedee Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 25 feedee Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Mid) > 50 feedee Yuki
-
-        { "S", "", "", "", "" }, // BuffetBoth(Late) > 50 Love Hana
-        { "S", "", "", "", "" }, // BuffetBoth(Late) > 75 Love Hana
-
-        { "S", "", "", "", "" }, // BuffetBoth(Late) > 50 Love Yuki
-        { "S", "", "", "", "" }, // BuffetBoth(Late) > 75 Love Yuki
-
-
-        { "S", "I decided to spend some time relaxing with Yuki, I invited her to the buffet place.", "Yuki: \"Heeeey! Hows it going Mr. Manager?\"", "\"All good Yuki, ready for dinner?\"", "" }, //BuffetYuki
-        { "S", "", "", "", "" }, //BuffetYuki
-
-        { "S", "Potato", "Jeff", "Tomato", "" } //BuffetHana
+        //Hana Buffet Intro Lines - Variable indexNum - jumpIndex
+        { "#S", "#F", "We made some smalltalk as we walked through the door.", "#F", "Hana looked pleased.", "#F", "Other stuff", "#JA 3 0" }, //[11]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[12]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[13]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[14]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[15]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[16]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[17]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[18]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[19]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[20]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[21]
 
     };
 
-    private string[,] restaurantLibrary = new string[,] {
-        { "S", "You walk inside", "You amble inside", "You walk through the door", "" }, //RestaurantIntroBoth 0
-        { "S", "Potato", "Jeff", "Tomato", "" }, //RestaurantIntroHana 1
-        { "S", "Potato", "Jeff", "Tomato", "" } //RestaurantIntroYuki 2
+    //Just Yuki Buffet[1]
+    private string[,] buffetY = new string[,]
+    {
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
+
+        //SPECULATIVE - Introductions - Variable indexNum - Fame
     };
 
-    private string[,] talkLibrary = new string[,] {
-        { "S", "You walk inside", "You amble inside", "You walk through the door", "" }, //TalkIntroHana 0
-        { "S", "Potato", "Jeff", "Tomato", "" } //TalkIntroYuki 1
+    //Both Buffet[2]
+    private string[,] buffetB = new string[,]
+    {
+        //Starting Lines - Variable indexNum - Weight Comparison
+
+        //Hana Heavier
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+
+        //Yuki Heavier
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
+
+        //SPECULATIVE - Introductions - Variable indexNum - Fame
     };
 
-    private string[,] concertLibrary = new string[,] {
-        { "S", "You walk inside", "You amble inside", "You walk through the door", "" }, //ConcertIntro 0
-        { "S", "Potato", "Jeff", "Tomato", "" } //ConcertBeginning 1
+
+    //-----------------------------------------------------------------------------------------------------------------
+    //Double Arrays for Eating at the buffet --- One Array Per Level Of Feedee! 
+
+    //[3]
+    private string[,] buffetHF1 = new string[,] {
+
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "Hana ate a lot", "#F", "it was hot", "#F", "fatness", "#E" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
     };
 
-    private string[,] tvadLibrary = new string[,] {
-        { "S", "You walk inside", "You amble inside", "You walk through the door", "" }, //TVADIntro 0
-        { "S", "Potato", "Jeff", "Tomato", "" } //TVADBeginning 1
+    //[4]
+    private string[,] buffetHF2 = new string[,] {
+
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
+    };
+
+    //[5]
+    private string[,] buffetHF3 = new string[,] {
+
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
+    };
+
+    //[6]
+    private string[,] buffetYF1 = new string[,] {
+
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
+    };
+
+    //[7]
+    private string[,] buffetYF2 = new string[,] {
+
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
+    };
+
+    //[8]
+    private string[,] buffetYF3 = new string[,] {
+
+        //Starting Lines - Variable indexNum - Weight
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[2]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[3]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[4]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[5]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[6]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[7]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[8]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[9]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[10]
     };
 
 
 
+    private string[][,] masterArray;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-
+        masterArray = new string[][,]
+        {
+            buffetH,buffetY,buffetB,buffetHF1,buffetHF2,buffetHF3,buffetYF1,buffetYF2,buffetYF3 
+        };
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (mRef.eventType != eventTypeEnum.none)
         {
-            eventManager();
             clickThrough();
-
-            if (buffetLibrary[sceneNum, dialogueNum] != "End")
-            {
-                dialogueText.text = buffetLibrary[sceneNum, dialogueNum];
-            }
-        }
-        else
-        {
-            resetAll();
+            arrayLogic();
+            currentString = masterArray[(int)currentArray][indexNum, dialogueNum];
         }
     }
 
-    void resetAll()
-    {
-            dialogueText.text = "";   
-    }
 
-    //Allows the player to advance the dialogue - scene num moves onto the next library entry
-    void clickThrough()
+    //Allows the player to advance the dialogue - clicklock prevets weirdness with the hash strings
+    private void clickThrough()
     {
-        if (Input.GetMouseButtonDown(0) && buffetLibrary[sceneNum, dialogueNum] != "")
+        if (Input.GetMouseButtonDown(0))
         {
             dialogueNum++;
-        }
-
-        else if (buffetLibrary[sceneNum, dialogueNum] == "")
-        {
-            dialogueNum = 1;
-            sceneNum++;
-        }
-
-        else if (buffetLibrary[sceneNum, dialogueNum] == "End")
-        {
-            dialogueText.text = "";
-            mRef.eventType = eventTypeEnum.none;
-            mRef.resetButtons = true;
-        }
+        } 
     }
 
-    //Type of event - Check who is there - Augment Scene with stats - Start the Scene - adjust stats after scene!
-    void eventManager()
-    {           
+    //Advanced logic that governs the Hash symbols in the strings
+    private void arrayLogic()
+    {
+        string[] words = currentString.Split(' ');
+
+        //Jump Index
+        if (words[0] == "#J")
+        {
+            dialogueText.text = "";
+            jumpIndex = int.Parse(words[1]);
+            dialogueNum = 1;
+            indexNum = jumpIndex;
+        }
+
+        //Jump Array
+        if (words[0] == "#JA")
+        {
+            dialogueText.text = "";
+            jumpArray = int.Parse(words[1]);
+            jumpIndex = int.Parse(words[2]);
+            dialogueNum = 1;
+            indexNum = jumpIndex;
+            currentArray = (currentArrayEnum)jumpArray;
+        }
+
+        //Expressions
+        if (words[0] == "#F")
+        {
+            dialogueNum++;
+            dialogueText.text = "";
+        }
+
+        switch (currentString)
+        {
+            //Start
+            case "#S":
+                dialogueText.text = "";
+                dialogueNum += 1;
+                mRef.resetButtons = false;
+                break;
+
+            //End
+            case "#E":
+                mRef.eventType = eventTypeEnum.none;
+                dialogueText.text = "";
+                indexNum = 0;
+                dialogueNum = 0;
+                mRef.resetButtons = true;
+                break;
+
+            //Next
+            case "#N":
+                dialogueText.text = "";
+                indexNum += 1;
+                dialogueNum = 1;
+                break;
+
+            default:
+                dialogueText.text = currentString;
+                break;
+        }
 
     }
 
