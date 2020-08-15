@@ -212,6 +212,40 @@ public class EventManager_class : MonoBehaviour
     };
 
 
+    //----------------------------------------------------------------------------------------------------------------------
+    //Management Text - Can be things like not having enough money and the girls moods affecting some scenes
+
+    //Too little money to do something [9]
+    private string[,] lowMoney = new string[,]
+    {
+        { "#S", "#F", "As you go to make the booking, you stop as you realise you just don't have enough money.", "#E", "", "", "", "" }, //[0]
+    };
+
+    //Dialogue lines affected by the girls mood [10]
+    private string[,] happyArrayHana = new string[,]
+    {
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+    };
+
+    //Dialogue lines affected by the girls mood [11]
+    private string[,] happyArrayYuki = new string[,]
+    {
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[1]
+    };
+
+    //Dialogue Lines affected by the girls Love[12]
+    private string[,] loveArrayHana = new string[,]
+    {
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+    };
+
+    //Dialogue Lines affected by the girls Love[13]
+    private string[,] loveArrayYuki = new string[,]
+    {
+        { "#S", "#F", "ZERO", "#F", "boop", "#F", "Bop", "#J" }, //[0]
+    };
 
     private string[][,] masterArray;
 
@@ -220,7 +254,7 @@ public class EventManager_class : MonoBehaviour
     {
         masterArray = new string[][,]
         {
-            buffetH,buffetY,buffetB,buffetHF1,buffetHF2,buffetHF3,buffetYF1,buffetYF2,buffetYF3 
+            buffetH,buffetY,buffetB,buffetHF1,buffetHF2,buffetHF3,buffetYF1,buffetYF2,buffetYF3,lowMoney,happyArrayHana,happyArrayYuki,loveArrayHana,loveArrayYuki 
         };
     }
 

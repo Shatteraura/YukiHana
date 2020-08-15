@@ -92,11 +92,9 @@ public class LocationButtons_class : MonoBehaviour
         this.GetComponent<SpriteRenderer>().sprite = normal;
     }
 
-
     //Governs how many characters you need/want at an event
     private void OnMouseDown()
     {
-
         switch (buttonType)
         {
             case buttonTypeEnum.buffet:
@@ -143,7 +141,6 @@ public class LocationButtons_class : MonoBehaviour
                     mRef.eventLock = true;
                 }  
                 break;
-
-        }     
+        } 
     }
 }
